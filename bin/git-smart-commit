@@ -35,11 +35,13 @@ run_setup() {
   # Provider selection
   echo "Which LLM provider would you like to use?"
   echo ""
-  echo "  1) OpenAI (GPT-4, etc.)"
+  echo "  1) OpenAI (GPT-5, GPT-4, etc.)"
   echo "  2) Anthropic (Claude)"
-  echo "  3) Other (manual setup)"
+  echo "  3) Google (Gemini)"
+  echo "  4) Ollama (Local models)"
+  echo "  5) Other (manual setup)"
   echo ""
-  read -p "Choice (1-3): " provider_choice
+  read -p "Choice (1-5): " provider_choice
 
   case "$provider_choice" in
     1)
@@ -55,17 +57,25 @@ run_setup() {
       echo ""
       echo "Which model should we use?"
       echo ""
-      echo "  1) gpt-4o-mini (Recommended - fast & affordable)"
-      echo "  2) gpt-4o"
-      echo "  3) gpt-4-turbo"
+      echo "  1) gpt-5-mini (Recommended - fast & affordable)"
+      echo "  2) gpt-5 (Latest general-purpose model)"
+      echo "  3) gpt-5-nano (Fastest & most affordable)"
+      echo "  4) Custom (enter model name)"
       echo ""
-      read -p "Choice (1-3): " model_choice
+      read -p "Choice (1-4): " model_choice
 
       case "$model_choice" in
-        1) MODEL="gpt-4o-mini" ;;
-        2) MODEL="gpt-4o" ;;
-        3) MODEL="gpt-4-turbo" ;;
-        *) MODEL="gpt-4o-mini" ;;
+        1) MODEL="gpt-5-mini" ;;
+        2) MODEL="gpt-5" ;;
+        3) MODEL="gpt-5-nano" ;;
+        4)
+          echo ""
+          echo "Available models:"
+          llm models list 2>/dev/null | grep -i "openai" || echo "  (Run 'llm models list' to see all)"
+          echo ""
+          read -p "Enter model name: " MODEL
+          ;;
+        *) MODEL="gpt-5-mini" ;;
       esac
 
       llm models default "$MODEL"
@@ -73,7 +83,19 @@ run_setup() {
 
     2)
       echo ""
-      echo "Great! You'll need an Anthropic API key."
+      echo "Great! Installing Claude plugin..."
+      echo ""
+
+      if command -v pip3 &> /dev/null; then
+        pip3 install llm-claude-3 || { echo "❌ Failed to install Claude plugin"; exit 1; }
+      elif command -v pip &> /dev/null; then
+        pip install llm-claude-3 || { echo "❌ Failed to install Claude plugin"; exit 1; }
+      fi
+
+      echo ""
+      echo "✅ Claude plugin installed!"
+      echo ""
+      echo "You'll need an Anthropic API key."
       echo "Get one at: https://console.anthropic.com/"
       echo ""
       echo "Press Enter to set your API key..."
@@ -86,12 +108,20 @@ run_setup() {
       echo ""
       echo "  1) claude-3-5-sonnet-20241022 (Recommended)"
       echo "  2) claude-3-5-haiku-20241022"
+      echo "  3) Custom (enter model name)"
       echo ""
-      read -p "Choice (1-2): " model_choice
+      read -p "Choice (1-3): " model_choice
 
       case "$model_choice" in
         1) MODEL="claude-3-5-sonnet-20241022" ;;
         2) MODEL="claude-3-5-haiku-20241022" ;;
+        3)
+          echo ""
+          echo "Available models:"
+          llm models list 2>/dev/null | grep -i "claude" || echo "  (Run 'llm models list' to see all)"
+          echo ""
+          read -p "Enter model name: " MODEL
+          ;;
         *) MODEL="claude-3-5-sonnet-20241022" ;;
       esac
 
@@ -99,6 +129,107 @@ run_setup() {
       ;;
 
     3)
+      echo ""
+      echo "Great! Installing Gemini plugin..."
+      echo ""
+
+      if command -v pip3 &> /dev/null; then
+        pip3 install llm-gemini || { echo "❌ Failed to install Gemini plugin"; exit 1; }
+      elif command -v pip &> /dev/null; then
+        pip install llm-gemini || { echo "❌ Failed to install Gemini plugin"; exit 1; }
+      fi
+
+      echo ""
+      echo "✅ Gemini plugin installed!"
+      echo ""
+      echo "You'll need a Google AI API key."
+      echo "Get one at: https://aistudio.google.com/apikey"
+      echo ""
+      echo "Press Enter to set your API key..."
+      read
+
+      llm keys set gemini || { echo "❌ Setup failed"; exit 1; }
+
+      echo ""
+      echo "Which model should we use?"
+      echo ""
+      echo "  1) gemini-2.0-flash-exp (Recommended - fast & powerful)"
+      echo "  2) gemini-1.5-pro (Advanced reasoning)"
+      echo "  3) gemini-1.5-flash (Fast & efficient)"
+      echo "  4) Custom (enter model name)"
+      echo ""
+      read -p "Choice (1-4): " model_choice
+
+      case "$model_choice" in
+        1) MODEL="gemini-2.0-flash-exp" ;;
+        2) MODEL="gemini-1.5-pro" ;;
+        3) MODEL="gemini-1.5-flash" ;;
+        4)
+          echo ""
+          echo "Available models:"
+          llm models list 2>/dev/null | grep -i "gemini" || echo "  (Run 'llm models list' to see all)"
+          echo ""
+          read -p "Enter model name: " MODEL
+          ;;
+        *) MODEL="gemini-2.0-flash-exp" ;;
+      esac
+
+      llm models default "$MODEL"
+      ;;
+
+    4)
+      echo ""
+      echo "Great! Installing Ollama plugin..."
+      echo ""
+
+      if command -v pip3 &> /dev/null; then
+        pip3 install llm-ollama || { echo "❌ Failed to install Ollama plugin"; exit 1; }
+      elif command -v pip &> /dev/null; then
+        pip install llm-ollama || { echo "❌ Failed to install Ollama plugin"; exit 1; }
+      fi
+
+      echo ""
+      echo "✅ Ollama plugin installed!"
+      echo ""
+      echo "Make sure Ollama is running locally."
+      echo "Download at: https://ollama.ai/"
+      echo ""
+      echo "Which model should we use?"
+      echo ""
+      echo "  1) llama3.2 (Recommended)"
+      echo "  2) codellama"
+      echo "  3) mistral"
+      echo "  4) phi3"
+      echo "  5) Custom (enter model name)"
+      echo ""
+      read -p "Choice (1-5): " model_choice
+
+      case "$model_choice" in
+        1) MODEL="llama3.2" ;;
+        2) MODEL="codellama" ;;
+        3) MODEL="mistral" ;;
+        4) MODEL="phi3" ;;
+        5)
+          echo ""
+          echo "Available models:"
+          ollama list 2>/dev/null || echo "  (Run 'ollama list' to see installed models)"
+          echo ""
+          read -p "Enter model name: " MODEL
+          ;;
+        *) MODEL="llama3.2" ;;
+      esac
+
+      # Pull the model if not already available (skip for custom if user has it)
+      if [[ "$model_choice" != "5" ]]; then
+        echo ""
+        echo "Pulling model (this may take a moment)..."
+        ollama pull "$MODEL" || echo "⚠️  Make sure Ollama is running"
+      fi
+
+      llm models default "ollama/$MODEL"
+      ;;
+
+    5)
       echo ""
       echo "Please see the llm documentation for other providers:"
       echo "https://llm.datasette.io/"
@@ -128,6 +259,79 @@ for arg in "$@"; do
     -e|--edit) FORCE_EDIT=true ;;
     --dry-run) DRY_RUN=true ;;
     --setup) run_setup; exit 0 ;;
+    --help|-h)
+      echo ""
+      echo "smart-commit - LLM-powered git commit message generator"
+      echo ""
+      echo "Usage:"
+      echo "  git smart-commit [options]    Create a smart commit"
+      echo "  smart-commit [options]        Run with options"
+      echo ""
+      echo "Options:"
+      echo "  -y, --yes                     Skip confirmation, commit immediately"
+      echo "  -e, --edit                    Edit commit message before committing"
+      echo "  --dry-run                     Show commit message without committing"
+      echo "  --setup                       Re-run the setup wizard"
+      echo "  --uninstall                   Uninstall smart-commit"
+      echo "  -h, --help                    Show this help message"
+      echo ""
+      echo "Examples:"
+      echo "  git smart-commit              # Interactive mode (default)"
+      echo "  git smart-commit -y           # Auto-commit"
+      echo "  git smart-commit --dry-run    # Preview only"
+      echo "  smart-commit --setup          # Reconfigure provider"
+      echo ""
+      echo "Documentation: https://github.com/vicc/smart-commit"
+      echo ""
+      exit 0
+      ;;
+    --uninstall)
+      echo ""
+      echo "Uninstalling smart-commit..."
+      echo ""
+
+      # Detect installation method
+      INSTALL_PATH=$(which git-smart-commit 2>/dev/null || echo "")
+
+      if [[ -z "$INSTALL_PATH" ]]; then
+        echo "❌ smart-commit is not installed or not in PATH"
+        exit 1
+      fi
+
+      if [[ "$INSTALL_PATH" == *"homebrew"* ]] || [[ "$INSTALL_PATH" == *"Cellar"* ]]; then
+        echo "Detected Homebrew installation"
+        echo ""
+        echo "Run this command to uninstall:"
+        echo "  brew uninstall smart-commit"
+        echo ""
+      elif [[ "$INSTALL_PATH" == *".npm"* ]] || [[ "$INSTALL_PATH" == *"node_modules"* ]]; then
+        echo "Detected npm installation"
+        echo ""
+        echo "Run this command to uninstall:"
+        echo "  npm uninstall -g @viccalexander/smart-commit"
+        echo ""
+      else
+        echo "Detected manual installation at: $INSTALL_PATH"
+        echo ""
+        echo "Run these commands to uninstall:"
+        echo "  rm $INSTALL_PATH"
+        if command -v smart-commit &> /dev/null; then
+          SMART_COMMIT_PATH=$(which smart-commit)
+          if [[ "$SMART_COMMIT_PATH" != "$INSTALL_PATH" ]]; then
+            echo "  rm $SMART_COMMIT_PATH"
+          fi
+        fi
+        echo ""
+      fi
+
+      echo "Optional: Remove llm and plugins:"
+      echo "  pip uninstall llm llm-claude-3 llm-gemini llm-ollama"
+      echo ""
+      echo "Optional: Remove llm config:"
+      echo "  rm -rf ~/.config/llm"
+      echo ""
+      exit 0
+      ;;
   esac
 done
 

@@ -17,13 +17,14 @@ class SmartCommit < Formula
   desc "LLM-powered git commit message generator"
   homepage "https://github.com/vicc/smart-commit"
   url "https://github.com/vicc/smart-commit/archive/refs/tags/v1.0.0.tar.gz"
-  sha256 "CALCULATED_SHA256"
+  sha256 "320ec3385baf8d82e99bcd227b4ac6a3cb34629add74310fa6aa7671e11d6ffe"
   license "MIT"
 
   depends_on "python@3" => :recommended
 
   def install
     bin.install "bin/git-smart-commit"
+    bin.install_symlink bin/"git-smart-commit" => "smart-commit"
   end
 
   def caveats
@@ -34,12 +35,13 @@ class SmartCommit < Formula
 
       First run will walk you through a quick setup to configure your LLM provider.
 
-      To re-run setup later: git smart-commit --setup
+      To re-run setup later: smart-commit --setup
     EOS
   end
 
   test do
-    # Test that the command exists and is executable
+    # Test that both commands exist and are executable
     assert_match "Welcome to smart-commit", shell_output("#{bin}/git-smart-commit --setup 2>&1", 1)
+    assert_match "Welcome to smart-commit", shell_output("#{bin}/smart-commit --setup 2>&1", 1)
   end
 end

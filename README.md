@@ -121,7 +121,7 @@ That's it! The setup takes less than a minute.
 To re-run the setup wizard:
 
 ```bash
-git smart-commit --setup
+smart-commit --setup
 ```
 
 Or configure manually:
@@ -162,7 +162,19 @@ git smart-commit --dry-run
 Re-run setup wizard:
 
 ```bash
-git smart-commit --setup
+smart-commit --setup
+```
+
+Show help:
+
+```bash
+smart-commit --help
+```
+
+Uninstall:
+
+```bash
+smart-commit --uninstall
 ```
 
 ---

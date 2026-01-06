@@ -1,12 +1,13 @@
 {
   "name": "@viccalexander/smart-commit",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "LLM-powered git commit message generator",
   "bin": {
-    "git-smart-commit": "./bin/git-smart-commit"
+    "git-smart-commit": "./bin/git-smart-commit",
+    "smart-commit": "./bin/git-smart-commit"
   },
   "scripts": {
-    "postinstall": "echo '\n✅ smart-commit installed!\n\nRun: git smart-commit\n\n(First run will walk you through a quick setup)\n'"
+    "postinstall": "echo '\n✅ smart-commit installed!\n\nCommands:\n  git smart-commit   - Create a commit\n  smart-commit       - Run flags (--setup, --dry-run, etc.)\n\n(First run will walk you through a quick setup)\n'"
   },
   "keywords": [
     "git",
