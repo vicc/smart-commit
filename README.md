@@ -2,7 +2,7 @@
 
 **Stop overthinking your Git history.**  
 
-Smart Commit uses AI to write clean, consistent, and professional commit messages so you can stay in your flow. 🌊
+Smart Commit uses AI to write clean, consistent, and professional commit messages so you can stay in flow. 🌊
 
 <img width="940" height="445" alt="Screenshot 2026-01-06 at 3 07 22 PM" src="https://github.com/user-attachments/assets/c0be2e94-6701-49d8-b193-08f2ef298c8c" />
 
