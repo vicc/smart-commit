@@ -8,6 +8,15 @@ DRY_RUN=false
 # Interactive setup function
 run_setup() {
   echo ""
+  echo "                                                                                                  d8,        "
+  echo "                                            d8P                                                  \`8P    d8P  "
+  echo "                                         d888888P                                                    d888888P"
+  echo " .d888b,  88bd8b,d88b  d888b8b    88bd88b  ?88'       d8888b d8888b   88bd8b,d88b   88bd8b,d88b   88b  ?88'  "
+  echo " ?8b,     88P'\`?8P'?8bd8P' ?88    88P'  \`  88P       d8P' \`Pd8P' ?88  88P'\`?8P'?8b  88P'\`?8P'?8b  88P  88P   "
+  echo "   \`?8b  d88  d88  88P88b  ,88b  d88       88b       88b    88b  d88 d88  d88  88P d88  d88  88P d88   88b   "
+  echo "\`?888P' d88' d88'  88b\`?88P'\`88bd88'       \`?8b      \`?888P'\`?8888P'd88' d88'  88bd88' d88'  88bd88'   \`?8b  "
+  echo ""
+  echo ""
   echo "👋 Welcome to smart-commit!"
   echo ""
   echo "Let's get you set up. This will only take a minute."
@@ -49,8 +58,6 @@ run_setup() {
       echo "Great! You'll need an OpenAI API key."
       echo "Get one at: https://platform.openai.com/api-keys"
       echo ""
-      echo "Press Enter to set your API key..."
-      read
 
       llm keys set openai || { echo "❌ Setup failed"; exit 1; }
 
@@ -98,31 +105,31 @@ run_setup() {
       echo "You'll need an Anthropic API key."
       echo "Get one at: https://console.anthropic.com/"
       echo ""
-      echo "Press Enter to set your API key..."
-      read
 
-      llm keys set claude || { echo "❌ Setup failed"; exit 1; }
+      llm keys set anthropic || { echo "❌ Setup failed"; exit 1; }
 
       echo ""
       echo "Which model should we use?"
       echo ""
-      echo "  1) claude-3-5-sonnet-20241022 (Recommended)"
-      echo "  2) claude-3-5-haiku-20241022"
-      echo "  3) Custom (enter model name)"
+      echo "  1) claude-sonnet-4.5 (Recommended)"
+      echo "  2) claude-opus-4.5 (Most capable)"
+      echo "  3) claude-haiku-4.5 (Fastest)"
+      echo "  4) Custom (enter model name)"
       echo ""
-      read -p "Choice (1-3): " model_choice
+      read -p "Choice (1-4): " model_choice
 
       case "$model_choice" in
-        1) MODEL="claude-3-5-sonnet-20241022" ;;
-        2) MODEL="claude-3-5-haiku-20241022" ;;
-        3)
+        1) MODEL="claude-sonnet-4.5" ;;
+        2) MODEL="claude-opus-4.5" ;;
+        3) MODEL="claude-haiku-4.5" ;;
+        4)
           echo ""
           echo "Available models:"
           llm models list 2>/dev/null | grep -i "claude" || echo "  (Run 'llm models list' to see all)"
           echo ""
           read -p "Enter model name: " MODEL
           ;;
-        *) MODEL="claude-3-5-sonnet-20241022" ;;
+        *) MODEL="claude-sonnet-4.5" ;;
       esac
 
       llm models default "$MODEL"
@@ -145,33 +152,29 @@ run_setup() {
       echo "You'll need a Google AI API key."
       echo "Get one at: https://aistudio.google.com/apikey"
       echo ""
-      echo "Press Enter to set your API key..."
-      read
 
       llm keys set gemini || { echo "❌ Setup failed"; exit 1; }
 
       echo ""
       echo "Which model should we use?"
       echo ""
-      echo "  1) gemini-2.0-flash-exp (Recommended - fast & powerful)"
-      echo "  2) gemini-1.5-pro (Advanced reasoning)"
-      echo "  3) gemini-1.5-flash (Fast & efficient)"
-      echo "  4) Custom (enter model name)"
+      echo "  1) gemini-3-flash-preview (Recommended - speed & performance)"
+      echo "  2) gemini-3-pro-preview (Advanced reasoning)"
+      echo "  3) Custom (enter model name)"
       echo ""
-      read -p "Choice (1-4): " model_choice
+      read -p "Choice (1-3): " model_choice
 
       case "$model_choice" in
-        1) MODEL="gemini-2.0-flash-exp" ;;
-        2) MODEL="gemini-1.5-pro" ;;
-        3) MODEL="gemini-1.5-flash" ;;
-        4)
+        1) MODEL="gemini-3-flash-preview" ;;
+        2) MODEL="gemini-3-pro-preview" ;;
+        3)
           echo ""
           echo "Available models:"
           llm models list 2>/dev/null | grep -i "gemini" || echo "  (Run 'llm models list' to see all)"
           echo ""
           read -p "Enter model name: " MODEL
           ;;
-        *) MODEL="gemini-2.0-flash-exp" ;;
+        *) MODEL="gemini-3-flash-preview" ;;
       esac
 
       llm models default "$MODEL"
@@ -226,7 +229,7 @@ run_setup() {
         ollama pull "$MODEL" || echo "⚠️  Make sure Ollama is running"
       fi
 
-      llm models default "ollama/$MODEL"
+      llm models default "$MODEL"
       ;;
 
     5)
