@@ -16,8 +16,8 @@
 class SmartCommit < Formula
   desc "LLM-powered git commit message generator"
   homepage "https://github.com/vicc/smart-commit"
-  url "https://github.com/vicc/smart-commit/archive/refs/tags/v1.1.0.tar.gz"
-  sha256 "aab968b05ea2e79cc2cbf03f82429ed1603d69fe8d615946ad4a0f31e8a63993"
+  url "https://github.com/vicc/smart-commit/archive/refs/tags/v1.1.1.tar.gz"
+  sha256 "PASTE_HASH_HERE"
   license "MIT"
 
   depends_on "python@3" => :recommended
@@ -31,7 +31,7 @@ class SmartCommit < Formula
     <<~EOS
       ✅ smart-commit installed!
 
-      Run: git smart-commit
+      Run: smart-commit
 
       First run will walk you through a quick setup to configure your LLM provider.
 
