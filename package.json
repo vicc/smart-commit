@@ -1,5 +1,5 @@
 {
-  "name": "smart-commit",
+  "name": "@viccalexander/smart-commit",
   "version": "1.0.0",
   "description": "LLM-powered git commit message generator",
   "bin": {

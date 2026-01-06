@@ -8,7 +8,7 @@ Smart Commit helps your Git history read clearly, every time.
 
 ```bash
 # Install
-npm install -g smart-commit
+npm install -g @viccalexander/smart-commit
 
 # Run (first time walks you through setup)
 git smart-commit
@@ -82,7 +82,7 @@ That's it! The first-run setup handles everything else.
 ### Option 1: npm (Recommended)
 
 ```bash
-npm install -g smart-commit
+npm install -g @viccalexander/smart-commit
 ```
 
 ### Option 2: Homebrew
