@@ -1,0 +1,218 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+AUTO_YES=false
+FORCE_EDIT=false
+DRY_RUN=false
+
+# Interactive setup function
+run_setup() {
+  echo ""
+  echo "👋 Welcome to smart-commit!"
+  echo ""
+  echo "Let's get you set up. This will only take a minute."
+  echo ""
+
+  # Check if llm is installed
+  if ! command -v llm &> /dev/null; then
+    echo "📦 Installing 'llm' CLI tool..."
+    echo ""
+
+    # Try pip3 first, then pip
+    if command -v pip3 &> /dev/null; then
+      pip3 install llm || { echo "❌ Failed to install llm"; exit 1; }
+    elif command -v pip &> /dev/null; then
+      pip install llm || { echo "❌ Failed to install llm"; exit 1; }
+    else
+      echo "❌ Error: pip/pip3 not found. Please install Python first."
+      exit 1
+    fi
+
+    echo "✅ llm installed!"
+    echo ""
+  fi
+
+  # Provider selection
+  echo "Which LLM provider would you like to use?"
+  echo ""
+  echo "  1) OpenAI (GPT-4, etc.)"
+  echo "  2) Anthropic (Claude)"
+  echo "  3) Other (manual setup)"
+  echo ""
+  read -p "Choice (1-3): " provider_choice
+
+  case "$provider_choice" in
+    1)
+      echo ""
+      echo "Great! You'll need an OpenAI API key."
+      echo "Get one at: https://platform.openai.com/api-keys"
+      echo ""
+      echo "Press Enter to set your API key..."
+      read
+
+      llm keys set openai || { echo "❌ Setup failed"; exit 1; }
+
+      echo ""
+      echo "Which model should we use?"
+      echo ""
+      echo "  1) gpt-4o-mini (Recommended - fast & affordable)"
+      echo "  2) gpt-4o"
+      echo "  3) gpt-4-turbo"
+      echo ""
+      read -p "Choice (1-3): " model_choice
+
+      case "$model_choice" in
+        1) MODEL="gpt-4o-mini" ;;
+        2) MODEL="gpt-4o" ;;
+        3) MODEL="gpt-4-turbo" ;;
+        *) MODEL="gpt-4o-mini" ;;
+      esac
+
+      llm models default "$MODEL"
+      ;;
+
+    2)
+      echo ""
+      echo "Great! You'll need an Anthropic API key."
+      echo "Get one at: https://console.anthropic.com/"
+      echo ""
+      echo "Press Enter to set your API key..."
+      read
+
+      llm keys set claude || { echo "❌ Setup failed"; exit 1; }
+
+      echo ""
+      echo "Which model should we use?"
+      echo ""
+      echo "  1) claude-3-5-sonnet-20241022 (Recommended)"
+      echo "  2) claude-3-5-haiku-20241022"
+      echo ""
+      read -p "Choice (1-2): " model_choice
+
+      case "$model_choice" in
+        1) MODEL="claude-3-5-sonnet-20241022" ;;
+        2) MODEL="claude-3-5-haiku-20241022" ;;
+        *) MODEL="claude-3-5-sonnet-20241022" ;;
+      esac
+
+      llm models default "$MODEL"
+      ;;
+
+    3)
+      echo ""
+      echo "Please see the llm documentation for other providers:"
+      echo "https://llm.datasette.io/"
+      echo ""
+      echo "After setup, run 'git smart-commit' again."
+      exit 0
+      ;;
+
+    *)
+      echo "❌ Invalid choice"
+      exit 1
+      ;;
+  esac
+
+  echo ""
+  echo "✅ Setup complete!"
+  echo ""
+  echo "────────────────────────────────────────"
+  echo ""
+  echo "Now let's create your commit..."
+  echo ""
+}
+
+for arg in "$@"; do
+  case "$arg" in
+    -y|--yes) AUTO_YES=true ;;
+    -e|--edit) FORCE_EDIT=true ;;
+    --dry-run) DRY_RUN=true ;;
+    --setup) run_setup; exit 0 ;;
+  esac
+done
+
+# First-run detection: check if llm is installed and configured
+if ! command -v llm &> /dev/null || ! llm models default &> /dev/null; then
+  run_setup
+fi
+
+BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")
+ISSUE_KEY=$(echo "$BRANCH_NAME" | grep -oE '[a-z]+-[0-9]+' || true)
+
+git add .
+
+DIFF_FILES=$(git diff --cached --name-status)
+if [[ -z "$DIFF_FILES" ]]; then
+  echo "⚠️  No changes staged."
+  exit 1
+fi
+
+COMMIT_MSG=$(printf "Branch: %s\nChanged files:\n%s\n" "$BRANCH_NAME" "$DIFF_FILES" \
+  | llm "
+You are writing a git commit message.
+
+Rules:
+- Imperative mood.
+- Start with emoji.
+- Include issue key (${ISSUE_KEY}) if present.
+- Subject <= 72 chars.
+- Optional bullet body.
+
+Emoji guide:
+✨ feature
+🐛 fix
+♻️  refactor
+🎨 UI/style
+⚡️ performance
+🧪 tests
+📦 dependencies
+🔒 security
+📝 docs
+🔧 config/tooling
+🚀 deployment/CI
+🏗️  architecture
+🔥 cleanup/removal
+
+Output only the commit message.
+")
+
+if [[ -z "$COMMIT_MSG" ]]; then
+  COMMIT_MSG="${ISSUE_KEY:+$ISSUE_KEY: }Update changes"
+fi
+
+echo ""
+echo "📦 Proposed commit message"
+echo "────────────────────────────────────────"
+echo "$COMMIT_MSG"
+echo "────────────────────────────────────────"
+echo ""
+
+if $DRY_RUN; then
+  echo "🧪 Dry run only. No commit created."
+  exit 0
+fi
+
+if $FORCE_EDIT; then
+  git commit -e -m "$COMMIT_MSG"
+  exit 0
+fi
+
+if $AUTO_YES; then
+  git commit -m "$COMMIT_MSG"
+  echo "✅ Committed."
+  exit 0
+fi
+
+read -p "Commit with this message? (y / e / n): " choice
+case "$choice" in
+  y|Y)
+    git commit -m "$COMMIT_MSG"
+    echo "✅ Committed."
+    ;;
+  e|E)
+    git commit -e -m "$COMMIT_MSG"
+    ;;
+  *)
+    echo "❌ Commit canceled."
+    ;;
+esac

@@ -1,0 +1,45 @@
+{
+  "name": "smart-commit",
+  "version": "1.0.0",
+  "description": "LLM-powered git commit message generator",
+  "bin": {
+    "git-smart-commit": "./bin/git-smart-commit"
+  },
+  "scripts": {
+    "postinstall": "echo '\n✅ smart-commit installed!\n\nRun: git smart-commit\n\n(First run will walk you through a quick setup)\n'"
+  },
+  "keywords": [
+    "git",
+    "commit",
+    "llm",
+    "cli",
+    "commit-message",
+    "anthropic",
+    "openai",
+    "gpt",
+    "claude"
+  ],
+  "author": "Vicc Alexander",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vicc/smart-commit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vicc/smart-commit/issues"
+  },
+  "homepage": "https://github.com/vicc/smart-commit#readme",
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "os": [
+    "darwin",
+    "linux"
+  ],
+  "preferGlobal": true,
+  "files": [
+    "bin/",
+    "README.md",
+    "LICENSE"
+  ]
+}
