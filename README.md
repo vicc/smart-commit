@@ -6,8 +6,13 @@ Smart Commit helps your Git history read clearly, every time.
 
 ## Quickstart
 
+```bash
+# Install
+npm install -g smart-commit
 
-
+# Run (first time walks you through setup)
+git smart-commit
+```
 
 ## Designed for developers who
 
@@ -64,17 +69,11 @@ Safe when you want it. Fast when you need it.
 
 ## Requirements
 
-- Git  
-- Bash (macOS or Linux)  
-- `llm` by Simon Willison  
+- Git
+- Bash (macOS or Linux)
+- Python (for `llm` CLI tool - installed automatically on first run)
 
-Install `llm`:
-
-```bash
-pip install llm
-```
-
-Make sure a model is configured before continuing.
+That's it! The first-run setup handles everything else.
 
 ---
 
