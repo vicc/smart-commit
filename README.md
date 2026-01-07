@@ -1,6 +1,6 @@
 # Introducing Smart Commit ✨
 
-**Stop overthinking your Git history.**  
+**CLI-first AI commit messages. Git stays in the terminal.**  
 
 Smart Commit uses AI to write clean, consistent, and professional commit messages so you can stay in flow. 🌊
 
