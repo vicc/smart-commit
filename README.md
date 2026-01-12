@@ -116,6 +116,28 @@ smart-commit --setup
 
 ---
 
+## 🤖 Codex skill: `/smart-commit`
+
+Use smart-commit inside Codex CLI without keeping this repo around.
+
+Install:
+
+```bash
+git clone https://github.com/vicc/smart-commit.git
+cd smart-commit
+codex skills install dist/smart-commit.skill
+```
+
+Use:
+
+- Stage your changes (`git add ...`) in any git repo.
+- Open Codex CLI and run `/smart-commit`.
+- Copy the message or ask Codex to `git commit -m "<message>"`.
+
+Once installed, you can delete the repo—the skill stays available in Codex. Releases also include the `.skill` file for direct download.
+
+---
+
 ## 🎮 Usage Guide
 
 | Command | Action |
