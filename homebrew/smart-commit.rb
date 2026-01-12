@@ -16,8 +16,8 @@
 class SmartCommit < Formula
   desc "LLM-powered git commit message generator"
   homepage "https://github.com/vicc/smart-commit"
-  url "https://github.com/vicc/smart-commit/archive/refs/tags/v1.1.2.tar.gz"
-  sha256 "fa3650fb4780f281734a22039caa742e6ac569d282badede48eb9792de5b3486"
+  url "https://github.com/vicc/smart-commit/archive/refs/tags/v1.2.0.tar.gz"
+  sha256 "5020aacf3c39f15b23177f63263e3487a0c68b00d33a03140ba2906ecac0a35a"
   license "MIT"
 
   depends_on "python@3" => :recommended
