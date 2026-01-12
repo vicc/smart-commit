@@ -17,6 +17,45 @@ Smart Commit uses AI to write clean, consistent, and professional commit message
 
 ---
 
+### 🧩 Install the Codex Skill
+
+```bash
+git clone https://github.com/vicc/smart-commit.git
+cd smart-commit
+codex
+```
+
+Once the Codex CLI launches:
+
+1. 🛠️ Type `skill-installer`  
+2. 🌐 When prompted to allow network access to fetch the skill, reply **yes**  
+3. 🔄 Exit and relaunch Codex
+
+That’s it. You can now use `/smart-commit` inside Codex whenever you need it.
+
+<img width="1410" height="841" alt="Smart Commit Codex Skill in action" src="https://github.com/user-attachments/assets/3e73ada2-3e23-4eb2-81c3-02a0c7765d10" />
+
+### ▶️ Using the Codex Skill
+
+Once Codex is running, simply type:
+
+```
+smart-commit
+```
+
+and you’re good to go.
+
+Alternatively, you can browse installed skills:
+
+1. 🧭 Type `./skills`  
+2. ⏎ Press Enter  
+3. 🛠 Select **smart-commit** from the list
+
+> 💡 **Tip:**  
+> If Codex detects unstaged changes, you can run `git add .` manually or let Codex stage files for you as part of the smart-commit flow.
+
+---
+
 ## 🚀 Quickstart
 
 Get up and running in seconds. No complex configuration required.
@@ -113,28 +152,6 @@ The first time you run `git smart-commit`, a friendly wizard will help you:
 ```bash
 smart-commit --setup
 ```
-
----
-
-## 🤖 Codex skill: `/smart-commit`
-
-Use smart-commit inside Codex CLI without keeping this repo around.
-
-Install:
-
-```bash
-git clone https://github.com/vicc/smart-commit.git
-cd smart-commit
-codex skills install dist/smart-commit.skill
-```
-
-Use:
-
-- Stage your changes (`git add ...`) in any git repo.
-- Open Codex CLI and run `/smart-commit`.
-- Copy the message or ask Codex to `git commit -m "<message>"`.
-
-Once installed, you can delete the repo—the skill stays available in Codex. Releases also include the `.skill` file for direct download.
 
 ---
 
