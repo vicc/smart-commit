@@ -90,7 +90,7 @@ It works just as well for Swift, JavaScript, Python, Go, Rails, infra repos, or 
 Smart Commit acts as a smart wrapper around your staging and committing process:
 
 1. **Scans** your staged changes (or helps you stage them).
-2. **Analyzes** the diff to understand the *intent* of the code.
+2. **Uses** the branch name and staged file paths/change types in the standalone CLI, or the full staged diff as additional context in the Codex skill.
 3. **Drafts** a perfect commit message with an emoji and issue key.
 4. **Asks** for your vibe check—approve, edit, or cancel.
 
@@ -200,17 +200,20 @@ Smart Commit itself is free and open source. You'll need an API key for cloud LL
 
 ### Is my code sent to an LLM?
 
-Only file names and diff summaries are sent - **not your actual code content**. Smart Commit uses `git diff --name-status` to see what changed, which shows:
+It depends on which workflow you use:
+
+- **Standalone CLI (`git smart-commit` / `smart-commit`):** Passes the branch name, any issue key extracted from it, and staged file paths and change types from `git diff --cached --name-status` to the configured `llm` model. This message-generation path does not pass the full diff or file contents. The staged file list looks like:
+
 ```
 M    src/components/Button.tsx
 A    src/utils/helpers.ts
 ```
 
-The LLM sees file names and change types (Modified, Added, Deleted), never your source code.
+- **Codex skill:** Collects the branch name, extracted issue key, repository status, staged file paths/change types, and the full staged diff (`git diff --cached`) as model context. That diff can include source code and any secrets present in those changes.
 
 ### Can I use this with private repositories?
 
-Yes! Since only file names are sent (not code), it's safe for private repos. For extra security, use Ollama with local models.
+You can use either workflow with private repositories, but repository privacy does not prevent model context from reaching the configured provider. Branch names and file paths can reveal sensitive project, customer, or issue details; diff content can expose proprietary code or secrets. Review the context and your provider's data-handling policies before use. For the standalone CLI, a locally hosted Ollama model can keep model processing local; the Codex skill uses your Codex configuration.
 
 ### How do I switch LLM providers?
 
